@@ -285,3 +285,43 @@ def run_app():
     root.title("Maths Quiz")
     root.geometry("800x500")
     root.resizable(False, False)
+    # In order to manage audio playback for the quiz application, this code initialises the Pygame mixer system. 
+    # With the volume set to 70% for a delicate ambiance, it tries to load and play a continuous background music track ("Chill.mp3") in an infinite loop (-1).  
+    # It simultaneously loads two sound effects into memory for immediate playback during the test: "Correct.mp3" for right answers and "Wrong.mp3" for wrong ones.  
+    # The application can continue to run without crashing if any audio file fails to load (due to missing files or unsupported formats). 
+    # This is accomplished by setting the sound variables to None and printing an error message to the console.
+    
+    pygame.mixer.init()
+    try:
+        pygame.mixer.music.load("Chill.mp3")
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(0.7)
+        correct_sound = pygame.mixer.Sound("Correct.mp3")
+        wrong_sound = pygame.mixer.Sound("Wrong.mp3")
+    except Exception as e:
+        print("Error loading music:", e)
+        correct_sound = None
+        wrong_sound = None
+
+    # This block of code opens the corresponding image files using PIL's Image.open() to load and prepare background images for each difficulty level (Easy, Moderate, and Advanced).  
+    # To guarantee clear images on the fixed-size window, each image is precisely resized to 800x500 pixels using premium LANCZOS resampling.  
+    # After that, the resized PIL images are transformed into PhotoImage objects that work with Tkinter and saved in a dictionary called bg_images, 
+    # where the keys correspond to the names of the difficulties.  
+    # While maintaining references to avoid garbage collection and guarantee fluid rendering throughout the quiz session, 
+    # this dictionary enables effective background recovery and dynamic switching during gameplay.
+
+    easy_bg_raw = Image.open(EASY_BG_IMAGE).resize((800, 500), Image.Resampling.LANCZOS)
+    advanced_bg_raw = Image.open(ADVANCED_BG_IMAGE).resize((800, 500), Image.Resampling.LANCZOS)
+    moderate_bg_raw = Image.open(MODERATE_BG_IMAGE).resize((800, 500), Image.Resampling.LANCZOS)
+
+    bg_images = {
+        "Easy": ImageTk.PhotoImage(easy_bg_raw),
+        "Moderate": ImageTk.PhotoImage(moderate_bg_raw),
+        "Advanced": ImageTk.PhotoImage(advanced_bg_raw),
+    }
+
+    MathsQuizApp(root, bg_images, correct_sound, wrong_sound)
+    root.mainloop()
+
+if __name__ == "__main__":
+    run_app()
