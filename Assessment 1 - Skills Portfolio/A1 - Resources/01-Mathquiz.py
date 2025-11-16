@@ -3,6 +3,12 @@ from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
 import random
 import pygame
+import os  
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+def asset(path):
+    return os.path.join(BASE_DIR, path)
 
 # The following global functions have been established in this code section for a math quiz application:  
 # In the meantime, EASY_BG_IMAGE, MODERATE_BG_IMAGE, and ADVANCED_BG_IMAGE specify the file paths to distinct background images
@@ -11,9 +17,10 @@ import pygame
 # improving the user experience and overall immersion. NUM_QUESTAINS sets the total number of questions per session to 10, guaranteeing a uniform quiz length across all difficulty levels.
 
 NUM_QUESTIONS = 10
-EASY_BG_IMAGE = "Background1.png"
-ADVANCED_BG_IMAGE = "top-view-school-supplies-table-assortment.jpg"
-MODERATE_BG_IMAGE = "moderate.png"
+EASY_BG_IMAGE = asset("Background1.png")
+ADVANCED_BG_IMAGE = asset("top-view-school-supplies-table-assortment.jpg")
+MODERATE_BG_IMAGE = asset("moderate.png")
+
 
 
 def displayMenu(root, start_callback, bg_images):
@@ -22,7 +29,7 @@ def displayMenu(root, start_callback, bg_images):
     canvas.place(relx=0.5, rely=0.5, anchor="center")
 
     
-    menu_img = Image.open("Background2.png").resize((800, 500), Image.Resampling.LANCZOS)
+    menu_img = Image.open(asset("Background2.png")).resize((800, 500), Image.Resampling.LANCZOS)
     menu_img_tk = ImageTk.PhotoImage(menu_img)
     canvas.create_image(0, 0, anchor="nw", image=menu_img_tk)
     canvas.image = menu_img_tk  
@@ -293,11 +300,11 @@ def run_app():
     
     pygame.mixer.init()
     try:
-        pygame.mixer.music.load("Chill.mp3")
+        pygame.mixer.music.load(asset("Chill.mp3"))
         pygame.mixer.music.play(-1)
         pygame.mixer.music.set_volume(0.7)
-        correct_sound = pygame.mixer.Sound("Correct.mp3")
-        wrong_sound = pygame.mixer.Sound("Wrong.mp3")
+        correct_sound = pygame.mixer.Sound(asset("Correct.mp3"))
+        wrong_sound = pygame.mixer.Sound(asset("Wrong.mp3"))
     except Exception as e:
         print("Error loading music:", e)
         correct_sound = None
