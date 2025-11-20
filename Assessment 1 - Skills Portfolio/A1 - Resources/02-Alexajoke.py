@@ -4,13 +4,22 @@ import random
 import win32com.client
 import threading
 import pygame
+import os
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+assets_dir = os.path.join(script_dir, "assets")
+bg_path = os.path.join(assets_dir, "joke.png")
+
+
+
+
 
 
 # The jokes are loaded from a text file and returned as a list of (setup, punchline) pairs by this function. 
 # Each line is read, the setup and punchline are separated at the first question mark, and the lines are then stored as tuples. 
 # A default error message claiming that the jokes file could not be located is returned if the file is missing.
 
-def load_jokes(filename="randomJokes.txt"):
+def load_jokes(filename=os.path.join(assets_dir, "randomJokes.txt")):
     jokes = []
     try:
         with open(filename, "r", encoding="utf-8") as file:
@@ -49,7 +58,13 @@ class JokeApp:
 
         try:
             pygame.mixer.init()
-            self.laugh_sounds = [ "laugh.mp3", "laugh2.mp3", "Funny.mp3"]  
+            self.laugh_sounds = [
+    os.path.join(assets_dir, "laugh.mp3"),
+    os.path.join(assets_dir, "laugh2.mp3"),
+    os.path.join(assets_dir, "Funny.mp3")
+]
+
+  
             print("pygame mixer initialized")
         except Exception as e:
             print(f"pygame mixer init failed: {e}")
@@ -65,7 +80,7 @@ class JokeApp:
         self.canvas = tk.Canvas(root, width=1280, height=720, highlightthickness=0)
         self.canvas.pack(fill="both", expand=True)
 
-        bg_image = Image.open("joke2.png").resize((1280, 720))
+        bg_image = Image.open(bg_path).resize((1280, 720))
         self.bg_photo = ImageTk.PhotoImage(bg_image)
         self.canvas.create_image(0, 0, image=self.bg_photo, anchor="nw")
 
