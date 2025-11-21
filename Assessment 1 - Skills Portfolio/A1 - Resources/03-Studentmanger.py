@@ -4,8 +4,9 @@ from tkinter import ttk, messagebox, simpledialog
 from PIL import Image, ImageTk
 
 
-DATA_PATHS = ["/mnt/data/studentMarks.txt", "studentMarks.txt"]
-BG_IMAGE_PATHS = ["/mnt/data/s2.png", "s2.png"]
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_PATHS = [    os.path.join(BASE_DIR, "studentMarks.txt"),    "studentMarks.txt"]
+BG_IMAGE_PATHS = [    os.path.join(os.path.dirname(__file__), "s2.png"),    "/mnt/data/s2.png",    "s2.png"]
 POTENTIAL_MAX = 160.0
 
 
@@ -164,7 +165,7 @@ class StudentManagerApp:
             write_next()
 
         self.typewrite_text = typewrite_text.__get__(self)
-        
+
         # When the app launches, a multiline welcome message with a list of all eight menu options is defined and scheduled to appear with a typewriter animation after 700 ms.
 
         welcome = (
@@ -232,15 +233,23 @@ class StudentManagerApp:
         # this part of the code aims to initialise pygame, find, and play a background music file (work.mp3) on an infinite loop at low volume (0.23).
 
         try:
-            import pygame
-            pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=512)
-            music_path = next((p for p in ["work.mp3", "/mnt/data/work.mp3"] if os.path.exists(p)), None)
-            if music_path:
-                pygame.mixer.music.load(music_path)
-                pygame.mixer.music.play(-1)
-                pygame.mixer.music.set_volume(0.23)
+           import pygame, os
+
+           pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=512)
+
+           BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+           music_path = os.path.join(BASE_DIR, "work.mp3")   
+
+           if os.path.exists(music_path):
+              pygame.mixer.music.load(music_path)
+              pygame.mixer.music.play(-1)
+              pygame.mixer.music.set_volume(0.23)
+           else:
+              print("work.mp3 not found:", music_path)
+
         except Exception as e:
             print("Music error:", e)
+
 
     # While _find_student searches for a student by ID or partial name match case-insensitively and returns the matching Student object or None, 
     # the load_bg_image method finds and loads the background image (s2.png) from possible paths, resizes it to fit the 1920×1080 window,
